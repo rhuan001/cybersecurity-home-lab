@@ -1,1 +1,1 @@
-# Setup Notes
+# Detection Notes
