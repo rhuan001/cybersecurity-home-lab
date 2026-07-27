@@ -28,3 +28,13 @@ Cada VM vai ter 2 adaptadores de rede:
 - Convenção de IPs definida para o lab: .10 = Ubuntu Server (SIEM), .20 = Kali, .30 = Metasploitable2, .40 = Windows 10
 
 ![static ip configured](screenshots/03-ubuntu-static-ip-configured.png)
+
+## Splunk Installation
+- Ficheiro .deb transferido do host para a VM via SCP
+- Instalado com: sudo dpkg -i splunk-10.4.1-5a009d941268-linux-amd64.deb
+- Criado utilizador dedicado `siem` para correr o Splunk (evitar correr como root)
+- Splunk iniciado a partir do utilizador siem
+- Acesso remoto à VM configurado via SSH, para facilitar transferência de ficheiros e gestão do sistema
+- Interface web acessível via http://192.168.56.10:8000 (rede host-only), acesso confirmado via browser
+
+![splunk web login](screenshots/04-splunk-web-login.png)
