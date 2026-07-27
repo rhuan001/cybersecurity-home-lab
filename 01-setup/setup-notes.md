@@ -19,3 +19,12 @@ Cada VM vai ter 2 adaptadores de rede:
 - Login confirmado com sucesso, IP atribuído via NAT: 10.0.2.15 (Adapter 1)
 
 ![ubuntu server login success](screenshots/02-ubuntu-server-login-success.png)
+
+## Static IP Configuration (Host-only Interface)
+- Interface configurada: enp0s8
+- IP fixo atribuído: 192.168.56.10/24
+- Configuração feita via Netplan (/etc/netplan/50-cloud-init.yaml)
+- Permissões do ficheiro netplan ajustadas com `chmod 600` (recomendação do próprio Netplan, ficheiro não deve ser acessível por outros)
+- Convenção de IPs definida para o lab: .10 = Ubuntu Server (SIEM), .20 = Kali, .30 = Metasploitable2, .40 = Windows 10
+
+![static ip configured](screenshots/03-ubuntu-static-ip-configured.png)
