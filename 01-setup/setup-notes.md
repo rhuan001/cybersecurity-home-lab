@@ -38,3 +38,12 @@ Cada VM vai ter 2 adaptadores de rede:
 - Interface web acessível via http://192.168.56.10:8000 (rede host-only), acesso confirmado via browser
 
 ![splunk web login](screenshots/04-splunk-web-login.png)
+
+## Kali Linux — Installation & Network Configuration
+- VM importada a partir da imagem oficial pré-construída (kali-linux-2026.2-virtualbox-amd64)
+- RAM: 2048–4096 MB | CPUs: 2
+- Rede: Adapter 1 (NAT) + Adapter 2 (Host-only, 192.168.56.0/24)
+- Kali não usa Netplan (diferente do Ubuntu Server) — configuração de rede feita via NetworkManager (nmcli)
+- IP fixo atribuído: 192.168.56.20/24, interface eth1 ("Wired connection 2")
+
+![kali static ip configured](screenshots/05-kali-static-ip-configured.png)
