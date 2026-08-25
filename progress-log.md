@@ -11,3 +11,10 @@
 - Instalei o Splunk (.deb)
 - Criei utilizador dedicado (siem) para correr o Splunk sem privilégios root
 - Splunk a correr, interface web acessível e confirmada via browser
+## Dia — 25/08/2026
+- Configurei o Metasploitable2 como máquina alvo vulnerável do laboratório.
+- Mantive apenas o Adapter Host-only ativo, isolando a VM da Internet.
+- Configurei o IP estático `192.168.56.30/24` na interface `eth0`.
+- Confirmei o Kali Linux com o IP `192.168.56.20/24` na rede Host-only.
+- Testei a conectividade Kali → Metasploitable2 através de `ping`.
+- Resultado: 4 packets transmitted, 4 received, 0% packet loss.
