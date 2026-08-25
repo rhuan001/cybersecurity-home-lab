@@ -47,3 +47,17 @@ Cada VM vai ter 2 adaptadores de rede:
 - IP fixo atribuído: 192.168.56.20/24, interface eth1 ("Wired connection 2")
 
 ![kali static ip configured](screenshots/05-kali-static-ip-configured.png)
+
+## Metasploitable2 — Installation & Network Configuration
+
+- VM: Metasploitable2
+- Função: alvo vulnerável principal do laboratório
+- Adapter 1: desativado
+- Adapter 2: Host-only (192.168.56.0/24)
+- Interface de rede: eth0
+- IP fixo atribuído: 192.168.56.30/24
+- Configuração feita através de `/etc/network/interfaces`
+- A VM foi mantida sem acesso à Internet para permanecer isolada da rede externa
+- Comunicação com o Kali Linux confirmada através de ICMP (ping), com 0% packet loss
+
+![Metasploitable2 static IP](screenshots/06-metasploitable2-static-ip.png)
