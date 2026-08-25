@@ -18,3 +18,8 @@
 - Confirmei o Kali Linux com o IP `192.168.56.20/24` na rede Host-only.
 - Testei a conectividade Kali → Metasploitable2 através de `ping`.
 - Resultado: 4 packets transmitted, 4 received, 0% packet loss.
+- Instalei e configurei a VM Windows 10.
+- Configurei o Adapter 1 como NAT e o Adapter 2 como Host-only.
+- Configurei o IP estático `192.168.56.50/24` na interface Host-only.
+- Adicionei uma regra ICMPv4 no Windows Firewall para permitir testes de `ping`.
+- Confirmei a comunicação entre Kali Linux e Windows 10 através da rede Host-only.
