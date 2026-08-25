@@ -61,3 +61,20 @@ Cada VM vai ter 2 adaptadores de rede:
 - Comunicação com o Kali Linux confirmada através de ICMP (ping), com 0% packet loss
 
 ![Metasploitable2 static IP](screenshots/06-metasploitable2-static-ip.png)
+
+### Connectivity Test — Kali to Metasploitable2
+
+Após configurar o IP estático do Metasploitable2, foi realizado um teste de conectividade entre o Kali Linux (máquina atacante) e o Metasploitable2 (máquina alvo) através de ICMP.
+
+Comando executado no Kali Linux:
+
+`ping -c 4 192.168.56.30`
+
+Resultado:
+- 4 packets transmitted
+- 4 packets received
+- 0% packet loss
+
+O teste confirmou que o Kali Linux (`192.168.56.20`) consegue comunicar corretamente com o Metasploitable2 (`192.168.56.30`) através da rede isolada **Host-only**.
+
+![Kali to Metasploitable2 ping](screenshots/07-kali-to-metasploitable2-ping.png)
