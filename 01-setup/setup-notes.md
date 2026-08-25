@@ -25,7 +25,7 @@ Cada VM vai ter 2 adaptadores de rede:
 - IP fixo atribuído: 192.168.56.10/24
 - Configuração feita via Netplan (/etc/netplan/50-cloud-init.yaml)
 - Permissões do ficheiro netplan ajustadas com `chmod 600` (recomendação do próprio Netplan, ficheiro não deve ser acessível por outros)
-- Convenção de IPs definida para o lab: .10 = Ubuntu Server (SIEM), .20 = Kali, .30 = Metasploitable2, .40 = Windows 10
+- Convenção de IPs definida para o lab: .10 = Ubuntu Server (SIEM), .20 = Kali, .30 = Metasploitable2, .50 = Windows 10
 
 ![static ip configured](screenshots/03-ubuntu-static-ip-configured.png)
 
@@ -78,3 +78,16 @@ Resultado:
 O teste confirmou que o Kali Linux (`192.168.56.20`) consegue comunicar corretamente com o Metasploitable2 (`192.168.56.30`) através da rede isolada **Host-only**.
 
 ![Kali to Metasploitable2 ping](screenshots/07-kali-to-metasploitable2-ping.png)
+
+## Windows 10 — Installation & Network Configuration
+
+- VM criada: Windows-10-Lab
+- Sistema operativo: Windows 10
+- RAM: 4096 MB | CPUs: 2 | Disco: 50 GB
+- Rede: Adapter 1 (NAT) + Adapter 2 (Host-only, 192.168.56.0/24)
+- IP fixo atribuído: 192.168.56.50/24
+- IP configurado manualmente na interface Ethernet 2
+- Adapter 1 (NAT): 10.0.2.15
+- Adapter 2 (Host-only): 192.168.56.50/24
+
+![Windows 10 static IP](screenshots/08-windows10-static-ip.png)
