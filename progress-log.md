@@ -23,3 +23,11 @@
 - Configurei o IP estático `192.168.56.50/24` na interface Host-only.
 - Adicionei uma regra ICMPv4 no Windows Firewall para permitir testes de `ping`.
 - Confirmei a comunicação entre Kali Linux e Windows 10 através da rede Host-only.
+## Dia — 27/08/2026
+- Configurei o Splunk Enterprise para receber dados de forwarders na porta TCP `9997`.
+- Instalei o Splunk Universal Forwarder no Windows 10.
+- Configurei o Receiving Indexer para `192.168.56.10:9997`.
+- Criei o ficheiro `inputs.conf` para recolher os logs `Application`, `Security` e `System`.
+- Confirmei o serviço `SplunkForwarder` em estado `RUNNING`.
+- Validei a comunicação entre o Windows 10 e o Splunk Enterprise.
+- Confirmei a ingestão dos Windows Event Logs no Splunk Web através da pesquisa `index=* sourcetype="WinEventLog:*"`.
