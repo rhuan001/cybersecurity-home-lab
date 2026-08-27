@@ -99,6 +99,7 @@ O teste confirmou que o Kali Linux (`192.168.56.20`) consegue comunicar corretam
 
 - Splunk Universal Forwarder instalado no Windows 10
 - Receiving Indexer configurado para `192.168.56.10:9997`
+- Splunk Enterprise configurado para receber dados de forwarders na porta TCP `9997`
 - Serviço `SplunkForwarder` confirmado em estado `RUNNING`
 - Ficheiro `inputs.conf` criado em:
   `C:\Program Files\SplunkUniversalForwarder\etc\system\local\inputs.conf`
