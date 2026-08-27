@@ -112,3 +112,13 @@ O teste confirmou que o Kali Linux (`192.168.56.20`) consegue comunicar corretam
   `index=* sourcetype="WinEventLog:*"`
 
 ![Windows logs in Splunk](screenshots/09-windows-logs-splunk.png)
+
+## Linux Log Ingestion — Splunk
+
+- Utilizador `siem` adicionado ao grupo `adm` para permitir leitura dos logs do sistema
+- Splunk configurado para monitorizar `/var/log/auth.log` e `/var/log/syslog`
+- `/var/log/auth.log` configurado com sourcetype `linux_secure`
+- `/var/log/syslog` configurado com sourcetype `syslog`
+- Ingestão dos logs Linux confirmada com sucesso no Splunk Web
+
+![Linux logs in Splunk](screenshots/10-linux-logs-splunk.png)
