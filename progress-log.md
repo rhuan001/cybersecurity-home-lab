@@ -31,3 +31,7 @@
 - Confirmei o serviço `SplunkForwarder` em estado `RUNNING`.
 - Validei a comunicação entre o Windows 10 e o Splunk Enterprise.
 - Confirmei a ingestão dos Windows Event Logs no Splunk Web através da pesquisa `index=* sourcetype="WinEventLog:*"`.
+- Configurei a recolha de logs Linux no Splunk.
+- Adicionei o utilizador `siem` ao grupo `adm` para permitir acesso aos logs do sistema.
+- Configurei a ingestão de `/var/log/auth.log` e `/var/log/syslog`.
+- Validei com sucesso os sourcetypes `linux_secure` e `syslog` no Splunk Web.
