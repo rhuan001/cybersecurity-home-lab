@@ -35,3 +35,13 @@
 - Adicionei o utilizador `siem` ao grupo `adm` para permitir acesso aos logs do sistema.
 - Configurei a ingestão de `/var/log/auth.log` e `/var/log/syslog`.
 - Validei com sucesso os sourcetypes `linux_secure` e `syslog` no Splunk Web.
+- Criei snapshots das 4 VMs após concluir o setup base do laboratório.
+- Iniciei a fase de reconnaissance.
+- Executei host discovery com `nmap -sn` na rede `192.168.56.0/24`.
+- Identifiquei 5 hosts ativos na rede Host-Only.
+- Analisei o tráfego ARP gerado pelo Nmap através do Wireshark.
+- Executei um TCP SYN scan aos hosts ativos.
+- Identifiquei o host `192.168.56.30` como o sistema com maior superfície de ataque.
+- Executei service/version detection com `nmap -sV`.
+- Executei enumeração detalhada com `nmap -sC -sV`.
+- Identifiquei múltiplos serviços expostos no Metasploitable2, incluindo FTP, SSH, Telnet, HTTP, SMB, NFS, MySQL, PostgreSQL, VNC, IRC e Tomcat.
