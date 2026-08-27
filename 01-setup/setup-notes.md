@@ -93,4 +93,21 @@ O teste confirmou que o Kali Linux (`192.168.56.20`) consegue comunicar corretam
 - Adapter 1 (NAT): 10.0.2.15
 - Adapter 2 (Host-only): 192.168.56.50/24
 
-![Windows 10 static IP](screenshots/08-windows10-static-ip.png)
+![Windows 10 static IP](screenshots/08-windows-network-config.png)
+
+## Windows 10 — Splunk Universal Forwarder
+
+- Splunk Universal Forwarder instalado no Windows 10
+- Receiving Indexer configurado para `192.168.56.10:9997`
+- Serviço `SplunkForwarder` confirmado em estado `RUNNING`
+- Ficheiro `inputs.conf` criado em:
+  `C:\Program Files\SplunkUniversalForwarder\etc\system\local\inputs.conf`
+- Windows Event Logs configurados para recolha:
+  - Application
+  - Security
+  - System
+- Comunicação com o Splunk Enterprise confirmada
+- Eventos Windows recebidos com sucesso no Splunk Web através da pesquisa:
+  `index=* sourcetype="WinEventLog:*"`
+
+![Windows logs in Splunk](screenshots/09-windows-logs-splunk.png)
