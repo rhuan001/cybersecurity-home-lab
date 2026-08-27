@@ -33,7 +33,7 @@ replicating the workflow of a SOC Analyst and Penetration Tester.
 
 02-reconnaissance/ → scanning and enumeration
 
-03-exploitation/ → attack simulation
+03-exploitation/ → network and web attack simulation
 
 04-detection/ → SIEM dashboards, logs, packet captures
 
