@@ -24,6 +24,7 @@ replicating the workflow of a SOC Analyst and Penetration Tester.
 
 ## Tools
 
+## Tools
 `VirtualBox` `Kali Linux` `Nmap` `Metasploit` `Burp Suite` `Wireshark` `Splunk Enterprise` `Splunk Universal Forwarder`
 
 ## Project Structure
