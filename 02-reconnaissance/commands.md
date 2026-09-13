@@ -15,9 +15,9 @@ Result:
 
 Wireshark was used on interface `eth1` to observe the ARP traffic generated during host discovery.
 
-![Nmap Host Discovery](../01-setup/screenshots/11-nmap-host-discovery.png)
+![Nmap Host Discovery](screenshots/11-nmap-host-discovery.png)
 
-![Wireshark ARP Discovery](../01-setup/screenshots/12-wireshark-arp-discovery.png)
+![Wireshark ARP Discovery](screenshots/12-wireshark-arp-discovery.png)
 
 ## TCP SYN Scan
 
@@ -27,7 +27,7 @@ Command used:
 
 The scan showed that `192.168.56.30` exposed significantly more services than the other hosts and was selected for deeper enumeration.
 
-![Nmap SYN Scan](../01-setup/screenshots/13-nmap-syn-scan-active-hosts.png)
+![Nmap SYN Scan](screenshots/13-nmap-syn-scan-active-hosts.png)
 
 ## Service and Version Detection
 
@@ -50,7 +50,7 @@ Relevant services identified:
 - Tomcat — `5.5`
 - Bind shell — port `1524`
 
-![Nmap Service Version Scan](../01-setup/screenshots/14-nmap-service-version-scan.png)
+![Nmap Service Version Scan](screenshots/14-nmap-service-version-scan.png)
 
 ## Detailed Enumeration
 
@@ -70,4 +70,4 @@ The detailed scan revealed additional information such as:
 
 The results confirmed that `192.168.56.30` presents the largest attack surface in the lab and was selected as the primary target for the exploitation phase.
 
-![Metasploitable2 Detailed Enumeration](../01-setup/screenshots/15-metasploitable2-detailed-enumeration.png)
+![Metasploitable2 Detailed Enumeration](screenshots/15-metasploitable2-detailed-enumeration.png)
