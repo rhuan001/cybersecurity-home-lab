@@ -72,3 +72,20 @@
 - Confirmei que o utilizador anónimo consegue listar o conteúdo da share `tmp`.
 - Criei o finding `Insecure SMB Configuration and Anonymous Access`.
 - Documentei impacto, evidências e recomendações em `02-reconnaissance/findings.md`.
+## Dia 7— 16/09/2026
+- Iniciei a enumeração dos serviços Web nas portas `80/TCP` e `8180/TCP`.
+- Executei service/version detection com Nmap e os scripts `http-title` e `http-headers`.
+- Identifiquei Apache HTTP Server `2.2.8` com PHP `5.2.4-2ubuntu5.10` na porta `80`.
+- Identifiquei Apache Tomcat `5.5` na porta `8180`.
+- Inspecionei manualmente a página principal do Metasploitable2.
+- Identifiquei aplicações e serviços web expostos, incluindo TWiki, phpMyAdmin, Mutillidae, DVWA e WebDAV.
+- Identifiquei a exposição das credenciais padrão `msfadmin/msfadmin` na página inicial do Metasploitable2.
+- Inspecionei manualmente o Apache Tomcat na porta `8180`.
+- Confirmei a exposição da página default do Tomcat e de links para recursos administrativos e exemplos.
+- Executei enumeração adicional com o script `http-enum` do Nmap.
+- Identifiquei vários caminhos web expostos, incluindo `/tikiwiki/`, `/phpMyAdmin/`, `/phpinfo.php`, `/test/`, `/doc/`, `/icons/` e `/index/`.
+- Validei manualmente o acesso a `/phpinfo.php`.
+- Confirmei a exposição de informações técnicas do servidor, incluindo versão do PHP, sistema operativo, caminhos internos de configuração e módulos carregados.
+- Criei o finding `Exposed PHP Information Page`.
+- Classifiquei o finding como `Low` e documentei impacto, evidências e recomendações em `02-reconnaissance/findings.md`.
+- Documentei toda a enumeração Web em `02-reconnaissance/commands.md`.
