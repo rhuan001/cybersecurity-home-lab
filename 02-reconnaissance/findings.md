@@ -53,3 +53,60 @@ Although no files were exposed during this assessment, an insecure configuration
 ### Status
 
 **Confirmed**
+## Finding 02 — Insecure SMB Configuration and Anonymous Access
+
+**Target:** `192.168.56.30`  
+**Ports:** `139/TCP`, `445/TCP`  
+**Service:** `Samba 3.0.20-Debian`  
+**Severity:** High
+
+### Description
+
+The SMB service exposes several insecure configurations.
+
+Enumeration identified that SMBv1 is enabled and SMB message signing is disabled.
+
+The service also allows anonymous/guest authentication and permits unauthenticated enumeration of SMB shares and local user accounts.
+
+The `tmp` share was reported by Nmap as allowing anonymous `READ/WRITE` access.
+
+Manual validation confirmed that an anonymous user could successfully authenticate to the SMB service, enumerate available shares, access the `tmp` share, and list its contents.
+
+### Impact
+
+These SMB misconfigurations increase the attack surface of the system and may allow an unauthenticated attacker to gather information or interact with exposed resources.
+
+Potential impacts include:
+
+- Enumeration of valid usernames
+- Enumeration of SMB shares
+- Unauthorized access to shared resources
+- Exposure of files stored in anonymously accessible shares
+- Increased risk associated with the use of the legacy SMBv1 protocol
+- Increased exposure to relay or man-in-the-middle attacks when SMB signing is disabled
+
+### Evidence
+
+![SMB User Enumeration](screenshots/18-smb-enumeration-users.png)
+
+![SMB Share Enumeration](screenshots/19-smb-enumeration-shares.png)
+
+![SMB Security Settings](screenshots/20-smb-security-settings.png)
+
+![SMB Anonymous Shares](screenshots/21-smb-anonymous-shares.png)
+
+![SMB TMP Listing](screenshots/22-smb-tmp-listing.png)
+
+### Recommendation
+
+- Disable SMBv1 and use modern SMB versions.
+- Enable SMB message signing where appropriate.
+- Disable anonymous and guest SMB access.
+- Restrict access to SMB shares using proper authentication and permissions.
+- Remove unnecessary SMB shares.
+- Limit SMB access to trusted hosts and network segments.
+- Keep Samba updated to a supported version.
+
+### Status
+
+**Confirmed**
