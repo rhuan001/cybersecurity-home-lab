@@ -120,3 +120,88 @@ A directory listing was performed using:
 Anonymous access successfully allowed the contents of the share to be listed.
 
 ![SMB TMP Listing](screenshots/22-smb-tmp-listing.png)
+## HTTP/Web Enumeration
+
+Web services were identified on ports `80/TCP` and `8180/TCP`.
+
+Initial service and version detection was performed using:
+
+`sudo nmap -p80,8180 -sV --script http-title,http-headers 192.168.56.30`
+
+The scan identified:
+
+- Port `80/TCP` — Apache HTTP Server `2.2.8`
+- PHP `5.2.4-2ubuntu5.10`
+- Port `8180/TCP` — Apache Tomcat `5.5`
+- HTTP traffic is served without HTTPS on the tested endpoints
+
+![HTTP Service Enumeration](screenshots/23-http-service-enumeration.png)
+
+### Manual Web Inspection
+
+The web service on port `80` was manually inspected at:
+
+`http://192.168.56.30`
+
+The default Metasploitable2 web page exposed several applications and services, including:
+
+- TWiki
+- phpMyAdmin
+- Mutillidae
+- DVWA
+- WebDAV
+
+The page also displayed the default Metasploitable2 credentials `msfadmin/msfadmin`.
+
+![Web Root Exposed Applications](screenshots/24-web-root-exposed-apps.png)
+
+The Tomcat service was inspected at:
+
+`http://192.168.56.30:8180`
+
+The default Apache Tomcat `5.5` page was accessible and exposed links to administrative and example resources, including:
+
+- Tomcat Administration
+- Tomcat Manager
+- JSP Examples
+- Servlet Examples
+- WebDAV capabilities
+
+Access to the administrative interfaces was not tested during this reconnaissance step.
+
+![Tomcat Default Page](screenshots/25-tomcat-default-page.png)
+
+### HTTP Path Enumeration
+
+Additional HTTP enumeration was performed using:
+
+`sudo nmap -p80,8180 --script http-enum 192.168.56.30`
+
+The scan identified several potentially interesting resources on port `80`, including:
+
+- `/tikiwiki/`
+- `/test/`
+- `/phpinfo.php`
+- `/phpMyAdmin/`
+- `/doc/`
+- `/icons/`
+- `/index/`
+
+![HTTP Enumeration](screenshots/26-http-enum.png)
+
+### PHP Information Disclosure Validation
+
+The discovered PHP information page was manually accessed at:
+
+`http://192.168.56.30/phpinfo.php`
+
+The page exposed detailed information about the PHP and server environment, including:
+
+- PHP version
+- Operating system and kernel information
+- Server API
+- PHP configuration paths
+- Loaded configuration file
+- Enabled PHP modules and features
+
+![PHPInfo Information Disclosure](screenshots/27-phpinfo-information-disclosure.png)
