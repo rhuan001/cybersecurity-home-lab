@@ -108,5 +108,62 @@ Potential impacts include:
 - Keep Samba updated to a supported version.
 
 ### Status
+## Finding 03 — Exposed PHP Information Page
 
+**Target:** `192.168.56.30`  
+**Port:** `80/TCP`  
+**Service:** Apache HTTP Server / PHP  
+**Severity:** Low
+
+### Description
+
+A publicly accessible PHP information page was identified at:
+
+`http://192.168.56.30/phpinfo.php`
+
+The page exposes detailed information about the server's PHP configuration and underlying system.
+
+The exposed information includes:
+
+- PHP version `5.2.4-2ubuntu5.10`
+- Operating system and kernel information
+- Server API configuration
+- PHP configuration file locations
+- Loaded `php.ini` path
+- Enabled PHP extensions and modules
+- Internal filesystem paths
+
+This information was initially identified using Nmap HTTP enumeration and was then manually validated through the web browser.
+
+### Impact
+
+The exposed `phpinfo()` page provides an unauthenticated user with detailed technical information about the server environment.
+
+Although this does not directly provide access to the system, the information can assist an attacker during reconnaissance by helping identify:
+
+- Software versions
+- Server configuration
+- Installed PHP components
+- Internal filesystem paths
+- Potentially vulnerable technologies
+
+This information can make subsequent attacks more targeted and efficient.
+
+### Evidence
+
+![HTTP Enumeration](screenshots/26-http-enum.png)
+
+![PHPInfo Information Disclosure](screenshots/27-phpinfo-information-disclosure.png)
+
+### Recommendation
+
+- Remove publicly accessible `phpinfo()` pages from production systems.
+- Restrict diagnostic and development pages to authorized administrators.
+- Avoid exposing unnecessary information about software versions and server configuration.
+- Review the web root for other development, test, or diagnostic files.
+- Keep PHP and the web server updated to supported versions.
+
+### Status
+
+**Confirmed**
 **Confirmed**
