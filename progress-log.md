@@ -11,7 +11,7 @@
 - Instalei o Splunk (.deb)
 - Criei utilizador dedicado (siem) para correr o Splunk sem privilégios root
 - Splunk a correr, interface web acessível e confirmada via browser
-## Dia — 25/08/2026
+## Dia 3— 25/08/2026
 - Configurei o Metasploitable2 como máquina alvo vulnerável do laboratório.
 - Mantive apenas o Adapter Host-only ativo, isolando a VM da Internet.
 - Configurei o IP estático `192.168.56.30/24` na interface `eth0`.
@@ -23,7 +23,7 @@
 - Configurei o IP estático `192.168.56.50/24` na interface Host-only.
 - Adicionei uma regra ICMPv4 no Windows Firewall para permitir testes de `ping`.
 - Confirmei a comunicação entre Kali Linux e Windows 10 através da rede Host-only.
-## Dia — 27/08/2026
+## Dia 4— 27/08/2026
 - Configurei o Splunk Enterprise para receber dados de forwarders na porta TCP `9997`.
 - Instalei o Splunk Universal Forwarder no Windows 10.
 - Configurei o Receiving Indexer para `192.168.56.10:9997`.
