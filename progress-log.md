@@ -45,3 +45,16 @@
 - Executei service/version detection com `nmap -sV`.
 - Executei enumeração detalhada com `nmap -sC -sV`.
 - Identifiquei múltiplos serviços expostos no Metasploitable2, incluindo FTP, SSH, Telnet, HTTP, SMB, NFS, MySQL, PostgreSQL, VNC, IRC e Tomcat.
+## Dia 5— 13/09/2026
+- Iniciei a enumeração específica de serviços no Metasploitable2 (`192.168.56.30`).
+- Analisei o serviço FTP na porta `21/TCP`.
+- Executei enumeração FTP com os scripts `ftp-anon` e `ftp-syst` do Nmap.
+- Confirmei que o servidor utiliza `vsFTPd 2.3.4`.
+- Identifiquei que o servidor FTP permite autenticação anónima.
+- Validei manualmente o acesso através da conta `anonymous`.
+- O servidor confirmou o acesso com `230 Login successful`.
+- Executei `ls -la` para verificar o conteúdo disponível ao utilizador anónimo.
+- Não foram encontrados ficheiros expostos no diretório acessível.
+- Confirmei que a comunicação FTP é realizada em plain text, sem encriptação.
+- Criei o primeiro finding de reconnaissance: `Anonymous FTP Access`.
+- Classifiquei o finding como `Medium` e documentei impacto e recomendações em `02-reconnaissance/findings.md`.
