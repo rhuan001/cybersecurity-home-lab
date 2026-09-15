@@ -58,3 +58,17 @@
 - Confirmei que a comunicação FTP é realizada em plain text, sem encriptação.
 - Criei o primeiro finding de reconnaissance: `Anonymous FTP Access`.
 - Classifiquei o finding como `Medium` e documentei impacto e recomendações em `02-reconnaissance/findings.md`.
+## Dia 6— 15/09/2026
+- Iniciei a enumeração do serviço SMB nas portas `139/TCP` e `445/TCP`.
+- Executei scripts NSE do Nmap para enumerar protocolos SMB, configurações de segurança, shares e utilizadores.
+- Identifiquei que o alvo suporta SMBv1.
+- Identifiquei que SMB message signing está desativado.
+- Enumerei múltiplas contas locais através do SMB, incluindo `msfadmin` e `user`.
+- Identifiquei várias SMB shares expostas, incluindo `tmp`, `IPC$`, `ADMIN$`, `opt` e `print$`.
+- O Nmap reportou acesso anónimo `READ/WRITE` na share `tmp`.
+- Validei manualmente acesso SMB anónimo através do `smbclient`.
+- Confirmei que um utilizador anónimo consegue enumerar shares disponíveis.
+- Acedi manualmente à share `tmp` sem credenciais.
+- Confirmei que o utilizador anónimo consegue listar o conteúdo da share `tmp`.
+- Criei o finding `Insecure SMB Configuration and Anonymous Access`.
+- Documentei impacto, evidências e recomendações em `02-reconnaissance/findings.md`.
