@@ -165,3 +165,39 @@ Gerei outro evento de teste no Metasploitable2 e pesquisei-o no Splunk. O evento
 **Limitação:** A recolha de logs do Metasploitable2 só ficou operacional depois da reconnaissance inicial. Por isso, não tenho os eventos anteriores registados através desta fonte no Splunk.
 
 **O que aprendi:** Antes de simular ataques, devo validar se o SIEM está a receber os logs necessários do alvo. Também aprendi a diagnosticar um problema de encaminhamento, verificando os eventos locais, o serviço de logs e a chegada dos eventos ao servidor de monitorização.
+### Apache HTTP Logs — Splunk Integration
+
+Configurei a recolha dos logs HTTP do Metasploitable2 para conseguir analisar no Splunk os pedidos realizados pelo Kali.
+
+#### Historical Logs
+
+Copiei o ficheiro `/var/log/apache2/access.log` do Metasploitable2 para o Ubuntu Server e configurei o Splunk para importar os registos existentes.
+
+Validei a ingestão ao encontrar no Splunk um pedido anterior do Kali à página `/phpinfo.php`.
+
+![Historical Apache Logs](screenshots/30-apache-historical-logs-splunk.png)
+
+#### Live Log Forwarding
+
+Configurei o Apache para manter o `access.log` original e enviar os novos pedidos HTTP para o syslog através da facility `local6`.
+
+No Ubuntu Server, o `rsyslog` recebe esses eventos através da porta UDP `514` e guarda-os em:
+
+`/var/log/metasploitable-apache-live.log`
+
+Configurei o Splunk para monitorizar esse ficheiro com:
+
+- **Host:** `Metasploitable2`
+- **Sourcetype:** `metasploitable_apache_live`
+
+#### Validation
+
+Executei um novo pedido HTTP no Kali:
+
+`curl -s -o /dev/null -w 'HTTP %{http_code}\n' 'http://192.168.56.30/phpinfo.php?live_splunk_test=1'`
+
+O pedido devolveu `HTTP 200` e apareceu no Splunk, confirmando o funcionamento da recolha contínua.
+
+![Live Apache Logs](screenshots/31-apache-live-logs-splunk.png)
+
+**Resultado:** O Splunk consegue analisar os registos HTTP antigos importados e receber novos pedidos do Kali automaticamente.
