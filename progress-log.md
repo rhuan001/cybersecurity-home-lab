@@ -89,3 +89,24 @@
 - Criei o finding `Exposed PHP Information Page`.
 - Classifiquei o finding como `Low` e documentei impacto, evidências e recomendações em `02-reconnaissance/findings.md`.
 - Documentei toda a enumeração Web em `02-reconnaissance/commands.md`.
+## Dia — 22/09/2026
+
+- Verifiquei que o Splunk recebia logs do Ubuntu Server e do Windows, mas ainda não estava a receber logs do Metasploitable2.
+- Confirmei que os eventos de autenticação do Metasploitable2 eram guardados localmente em `/var/log/auth.log`.
+- Configurei o `rsyslog` do Ubuntu Server para receber syslog remoto através da porta UDP `514`.
+- Configurei o Metasploitable2 para enviar os logs de autenticação para `192.168.56.10`.
+- Durante os testes, identifiquei o erro `syslogd: sendto: Bad file descriptor`.
+- Resolvi o problema ao reiniciar o serviço `sysklogd` do Metasploitable2.
+- Configurei o Ubuntu Server para guardar os eventos recebidos em `/var/log/metasploitable-auth.log`.
+- Configurei o Splunk para monitorizar esse ficheiro com `host=Metasploitable2` e `sourcetype=metasploitable_auth`.
+- Gerei eventos de teste com o comando `logger` e confirmei que chegavam ao Splunk.
+- Documentei o problema e a resolução no `setup-notes.md`.
+- Confirmei que o Apache do Metasploitable2 ainda tinha guardados no `access.log` pedidos HTTP realizados anteriormente pelo Kali.
+- Copiei os logs HTTP antigos para o Ubuntu Server através de `scp`.
+- Configurei o Splunk para importar esses registos com o sourcetype `access_combined`.
+- Validei a importação ao encontrar no Splunk um pedido anterior do Kali à página `/phpinfo.php`.
+- Configurei o Apache para continuar a guardar os pedidos no `access.log` e enviá-los também para o syslog através da facility `local6`.
+- Configurei o `rsyslog` do Ubuntu Server para guardar os novos eventos HTTP em `/var/log/metasploitable-apache-live.log`.
+- Configurei o Splunk para monitorizar esse ficheiro com o sourcetype `metasploitable_apache_live`.
+- Executei um novo pedido HTTP a partir do Kali e confirmei que apareceu automaticamente no Splunk.
+- Documentei a importação dos logs antigos e a recolha contínua no `setup-notes.md`.
