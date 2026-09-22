@@ -122,3 +122,46 @@ O teste confirmou que o Kali Linux (`192.168.56.20`) consegue comunicar corretam
 - Ingestão dos logs Linux confirmada com sucesso no Splunk Web
 
 ![Linux logs in Splunk](screenshots/10-linux-logs-splunk.png)
+
+### Encaminhamento de Logs do Metasploitable2 — Resolução de Problemas
+
+Durante a reconnaissance, o Splunk já recolhia logs do Ubuntu Server e do Windows, mas ainda não estava a receber os logs de autenticação do Metasploitable2.
+
+Antes de iniciar o cenário de ataque SSH, decidi resolver esta falha para conseguir analisar as tentativas de autenticação no SIEM.
+
+#### Problema encontrado
+
+Configurei o Metasploitable2 para enviar os logs de autenticação para o Ubuntu Server (`192.168.56.10`) através de syslog, na porta UDP 514.
+
+Apesar de o evento de teste aparecer no `/var/log/auth.log` do Metasploitable2, não chegava ao Ubuntu Server. Ao analisar os logs do serviço, encontrei repetidamente o erro:
+
+`syslogd: sendto: Bad file descriptor`
+
+![Erro no envio de logs do Metasploitable2](screenshots/29-metasploitable-syslog-error.png)
+
+#### Resolução
+
+Reiniciei o serviço de logs do Metasploitable2 com:
+
+`sudo /etc/init.d/sysklogd restart`
+
+Depois do reinício, gerei um novo evento de teste e confirmei que este já chegava ao Ubuntu Server.
+
+Configurei o `rsyslog` para guardar os eventos de autenticação recebidos num ficheiro separado:
+
+`/var/log/metasploitable-auth.log`
+
+Por fim, configurei o Splunk para monitorizar esse ficheiro com os seguintes campos:
+
+- **Host:** `Metasploitable2`
+- **Sourcetype:** `metasploitable_auth`
+
+#### Validação final
+
+Gerei outro evento de teste no Metasploitable2 e pesquisei-o no Splunk. O evento apareceu corretamente, confirmando o funcionamento do encaminhamento e da ingestão dos logs.
+
+![Validação dos logs do Metasploitable2 no Splunk](screenshots/28-metasploitable-splunk-ingestion.png)
+
+**Limitação:** A recolha de logs do Metasploitable2 só ficou operacional depois da reconnaissance inicial. Por isso, não tenho os eventos anteriores registados através desta fonte no Splunk.
+
+**O que aprendi:** Antes de simular ataques, devo validar se o SIEM está a receber os logs necessários do alvo. Também aprendi a diagnosticar um problema de encaminhamento, verificando os eventos locais, o serviço de logs e a chegada dos eventos ao servidor de monitorização.
