@@ -2,18 +2,19 @@
 
 ## Host Discovery
 
-Command used:
+Comando utilizado:
 
 `sudo nmap -sn 192.168.56.0/24`
 
-Result:
+Hosts identificados:
+
 - `192.168.56.1`
 - `192.168.56.10`
 - `192.168.56.20`
 - `192.168.56.30`
 - `192.168.56.50`
 
-Wireshark was used on interface `eth1` to observe the ARP traffic generated during host discovery.
+Utilizei o Wireshark na interface `eth1` para analisar o tráfego ARP gerado durante o host discovery.
 
 ![Nmap Host Discovery](screenshots/11-nmap-host-discovery.png)
 
@@ -21,21 +22,21 @@ Wireshark was used on interface `eth1` to observe the ARP traffic generated duri
 
 ## TCP SYN Scan
 
-Command used:
+Comando utilizado:
 
 `sudo nmap -sS 192.168.56.1 192.168.56.10 192.168.56.30 192.168.56.50`
 
-The scan showed that `192.168.56.30` exposed significantly more services than the other hosts and was selected for deeper enumeration.
+O scan mostrou que o host `192.168.56.30` tinha significativamente mais serviços expostos do que os restantes hosts. Por esse motivo, selecionei-o para uma enumeração mais detalhada.
 
 ![Nmap SYN Scan](screenshots/13-nmap-syn-scan-active-hosts.png)
 
 ## Service and Version Detection
 
-Command used:
+Comando utilizado:
 
 `sudo nmap -sV 192.168.56.30`
 
-Relevant services identified:
+Principais serviços identificados:
 
 - FTP — `vsftpd 2.3.4`
 - SSH — `OpenSSH 4.7p1`
@@ -48,44 +49,45 @@ Relevant services identified:
 - VNC
 - IRC — `UnrealIRCd`
 - Tomcat — `5.5`
-- Bind shell — port `1524`
+- Bind shell — porta `1524`
 
 ![Nmap Service Version Scan](screenshots/14-nmap-service-version-scan.png)
 
 ## Detailed Enumeration
 
-Command used:
+Comando utilizado:
 
 `sudo nmap -sC -sV 192.168.56.30`
 
-The detailed scan revealed additional information such as:
+O scan detalhado revelou informações adicionais, como:
 
-- Anonymous FTP login enabled
-- SMB signing disabled
-- SSLv2 support on SMTP
-- Multiple legacy services exposed
-- Metasploitable root shell available on port `1524`
-- Apache Tomcat available on port `8180`
-- UnrealIRCd available on port `6667`
+- Anonymous FTP login ativo
+- SMB signing desativado
+- Suporte a SSLv2 no serviço SMTP
+- Vários serviços legacy expostos
+- Metasploitable root shell disponível na porta `1524`
+- Apache Tomcat disponível na porta `8180`
+- UnrealIRCd disponível na porta `6667`
 
-The results confirmed that `192.168.56.30` presents the largest attack surface in the lab and was selected as the primary target for the exploitation phase.
+Os resultados confirmaram que o host `192.168.56.30` apresentava a maior attack surface do laboratório, sendo selecionado como alvo principal para a fase de exploitation.
 
 ![Metasploitable2 Detailed Enumeration](screenshots/15-metasploitable2-detailed-enumeration.png)
+
 ## SMB Enumeration
 
-The SMB service was enumerated on ports `139` and `445`.
+Realizei a enumeração do serviço SMB nas portas `139` e `445`.
 
-Command used:
+Comando utilizado:
 
 `sudo nmap -p139,445 --script smb-protocols,smb-security-mode,smb-enum-shares,smb-enum-users 192.168.56.30`
 
-The scan identified several security-relevant findings:
+O scan identificou várias configurações relevantes para a segurança:
 
-- SMBv1 is enabled
-- SMB message signing is disabled
-- Multiple local users can be enumerated
-- Anonymous/guest access is enabled
-- The `tmp` share was reported as allowing anonymous `READ/WRITE` access
+- SMBv1 está ativo
+- SMB message signing está desativado
+- É possível enumerar vários utilizadores locais
+- Anonymous/guest access está ativo
+- O Nmap identificou a share `tmp` como permitindo acesso anónimo `READ/WRITE`
 
 ![SMB User Enumeration](screenshots/18-smb-enumeration-users.png)
 
@@ -95,11 +97,11 @@ The scan identified several security-relevant findings:
 
 ### Manual SMB Validation
 
-Anonymous SMB access was manually validated using:
+Validei manualmente o anonymous SMB access com o comando:
 
 `smbclient -N -L //192.168.56.30`
 
-The server allowed anonymous authentication and exposed the following shares:
+O servidor permitiu anonymous login e revelou as seguintes shares:
 
 - `print$`
 - `tmp`
@@ -109,41 +111,44 @@ The server allowed anonymous authentication and exposed the following shares:
 
 ![SMB Anonymous Shares](screenshots/21-smb-anonymous-shares.png)
 
-The `tmp` share was then accessed anonymously using:
+De seguida, acedi à share `tmp` sem utilizar uma password:
 
 `smbclient -N //192.168.56.30/tmp`
 
-A directory listing was performed using:
+Para listar o conteúdo da share, utilizei:
 
 `ls`
 
-Anonymous access successfully allowed the contents of the share to be listed.
+Consegui aceder à share e realizar um directory listing através de uma sessão anónima.
 
 ![SMB TMP Listing](screenshots/22-smb-tmp-listing.png)
+
+A permissão de escrita `WRITE`, identificada pelo Nmap, não foi confirmada manualmente neste teste.
+
 ## HTTP/Web Enumeration
 
-Web services were identified on ports `80/TCP` and `8180/TCP`.
+Identifiquei serviços Web nas portas `80/TCP` e `8180/TCP`.
 
-Initial service and version detection was performed using:
+Para realizar o service and version detection inicial, utilizei:
 
 `sudo nmap -p80,8180 -sV --script http-title,http-headers 192.168.56.30`
 
-The scan identified:
+O scan identificou:
 
-- Port `80/TCP` — Apache HTTP Server `2.2.8`
+- Porta `80/TCP` — Apache HTTP Server `2.2.8`
 - PHP `5.2.4-2ubuntu5.10`
-- Port `8180/TCP` — Apache Tomcat `5.5`
-- HTTP traffic is served without HTTPS on the tested endpoints
+- Porta `8180/TCP` — Apache Tomcat `5.5`
+- Os endpoints testados utilizam HTTP sem HTTPS
 
 ![HTTP Service Enumeration](screenshots/23-http-service-enumeration.png)
 
 ### Manual Web Inspection
 
-The web service on port `80` was manually inspected at:
+Inspecionei manualmente o serviço Web da porta `80` através do browser:
 
 `http://192.168.56.30`
 
-The default Metasploitable2 web page exposed several applications and services, including:
+A página principal do Metasploitable2 apresentava várias aplicações e serviços expostos:
 
 - TWiki
 - phpMyAdmin
@@ -151,15 +156,15 @@ The default Metasploitable2 web page exposed several applications and services, 
 - DVWA
 - WebDAV
 
-The page also displayed the default Metasploitable2 credentials `msfadmin/msfadmin`.
+A página também apresentava as default credentials do Metasploitable2: `msfadmin/msfadmin`.
 
 ![Web Root Exposed Applications](screenshots/24-web-root-exposed-apps.png)
 
-The Tomcat service was inspected at:
+De seguida, inspecionei o serviço Tomcat através do endereço:
 
 `http://192.168.56.30:8180`
 
-The default Apache Tomcat `5.5` page was accessible and exposed links to administrative and example resources, including:
+A default page do Apache Tomcat `5.5` estava acessível e apresentava links para recursos administrativos e exemplos, incluindo:
 
 - Tomcat Administration
 - Tomcat Manager
@@ -167,17 +172,19 @@ The default Apache Tomcat `5.5` page was accessible and exposed links to adminis
 - Servlet Examples
 - WebDAV capabilities
 
-Access to the administrative interfaces was not tested during this reconnaissance step.
+O acesso às interfaces administrativas não foi testado nesta fase de reconnaissance.
 
 ![Tomcat Default Page](screenshots/25-tomcat-default-page.png)
 
 ### HTTP Path Enumeration
 
-Additional HTTP enumeration was performed using:
+Realizei uma enumeração adicional dos caminhos Web utilizando o script `http-enum` do Nmap.
+
+Comando utilizado:
 
 `sudo nmap -p80,8180 --script http-enum 192.168.56.30`
 
-The scan identified several potentially interesting resources on port `80`, including:
+O scan identificou vários recursos potencialmente interessantes na porta `80`:
 
 - `/tikiwiki/`
 - `/test/`
@@ -191,17 +198,19 @@ The scan identified several potentially interesting resources on port `80`, incl
 
 ### PHP Information Disclosure Validation
 
-The discovered PHP information page was manually accessed at:
+Depois de identificar o ficheiro `/phpinfo.php`, acedi manualmente à página através do browser:
 
 `http://192.168.56.30/phpinfo.php`
 
-The page exposed detailed information about the PHP and server environment, including:
+A página estava acessível sem autenticação e expunha informações detalhadas sobre o ambiente PHP e o servidor, incluindo:
 
 - PHP version
-- Operating system and kernel information
+- Operating system e kernel information
 - Server API
 - PHP configuration paths
 - Loaded configuration file
-- Enabled PHP modules and features
+- PHP modules e features disponíveis
+
+Esta informação pode ajudar um atacante a identificar as versões e configurações utilizadas pelo servidor, facilitando uma reconnaissance mais direcionada.
 
 ![PHPInfo Information Disclosure](screenshots/27-phpinfo-information-disclosure.png)
