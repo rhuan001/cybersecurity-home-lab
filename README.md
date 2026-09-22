@@ -22,7 +22,6 @@ replicating the workflow of a SOC Analyst and Penetration Tester.
 
 ![Cybersecurity Home Lab Architecture](01-setup/screenshots/architecture-diagram.png)
 
-## Tools
 
 ## Tools
 `VirtualBox` `Kali Linux` `Nmap` `Metasploit` `Burp Suite` `Wireshark` `Splunk Enterprise` `Splunk Universal Forwarder`
