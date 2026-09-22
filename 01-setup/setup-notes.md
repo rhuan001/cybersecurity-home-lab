@@ -201,3 +201,12 @@ O pedido devolveu `HTTP 200` e apareceu no Splunk, confirmando o funcionamento d
 ![Live Apache Logs](screenshots/31-apache-live-logs-splunk.png)
 
 **Resultado:** O Splunk consegue analisar os registos HTTP antigos importados e receber novos pedidos do Kali automaticamente.
+### SSH Logging Validation
+
+Antes de iniciar o primeiro cenário de exploitation, realizei uma tentativa de autenticação SSH falhada a partir do Kali (`192.168.56.20`) contra o Metasploitable2 (`192.168.56.30`).
+
+Confirmei no Splunk que o evento `Failed password` foi recebido através do sourcetype `metasploitable_auth`.
+
+Esta validação permitiu confirmar que o SIEM estava preparado para monitorizar as tentativas de autenticação SSH antes da execução do ataque com Medusa.
+
+![SSH Failed Login Validation](screenshots/32-ssh-failed-login-validation.png)
