@@ -9,32 +9,32 @@
 
 ### Description
 
-The FTP service allows anonymous authentication without requiring a valid user account.
+O serviço FTP permite anonymous authentication, sem exigir uma conta pessoal válida.
 
-This was identified using Nmap and manually validated by connecting to the FTP server using the `anonymous` account.
+Identifiquei esta configuração através do Nmap e confirmei-a manualmente ao estabelecer uma ligação FTP com o utilizador `anonymous`.
 
-The server returned:
+O servidor respondeu:
 
 `230 Login successful.`
 
-A directory listing was performed using:
+Depois, executei um directory listing com o comando:
 
 `ls -la`
 
-No files were exposed in the accessible directory during the assessment.
+Durante o teste, não foram encontrados ficheiros expostos no diretório acessível ao utilizador anónimo.
 
-Additionally, the FTP connection operates in plain text, meaning that authentication data and transferred information are not encrypted.
+Também identifiquei que a ligação FTP utiliza plain text, ou seja, os dados de autenticação e os ficheiros transferidos não são encriptados.
 
 ### Impact
 
-Anonymous FTP access increases the attack surface by allowing unauthenticated users to interact with the FTP service.
+O anonymous FTP access aumenta a attack surface do servidor, permitindo que utilizadores sem uma conta pessoal válida interajam com o serviço.
 
-Although no files were exposed during this assessment, an insecure configuration could potentially lead to:
+Embora não tenha encontrado ficheiros expostos durante o teste, esta configuração pode originar riscos como:
 
-- Unauthorized access to files
+- Unauthorized access a ficheiros, caso sejam disponibilizados no diretório FTP
 - Information disclosure
-- Unauthorized file upload or modification if write permissions are enabled
-- Interception of FTP credentials and transferred data
+- Upload ou modificação não autorizada de ficheiros, caso existam write permissions
+- Interceção de credenciais FTP e dados transferidos devido à ausência de encriptação
 
 ### Evidence
 
@@ -44,15 +44,18 @@ Although no files were exposed during this assessment, an insecure configuration
 
 ### Recommendation
 
-- Disable anonymous FTP access unless explicitly required.
-- Restrict FTP access to authorized users.
-- Replace FTP with SFTP or FTPS.
-- Review FTP directory permissions.
-- Keep the FTP service updated or remove it if it is not required.
+- Desativar anonymous FTP access, caso não seja necessário.
+- Restringir o acesso FTP a utilizadores autorizados.
+- Substituir FTP por um protocolo com encriptação, como SFTP ou FTPS.
+- Rever as permissões dos diretórios FTP.
+- Manter o serviço atualizado ou removê-lo caso não seja necessário.
 
 ### Status
 
 **Confirmed**
+
+---
+
 ## Finding 02 — Insecure SMB Configuration and Anonymous Access
 
 **Target:** `192.168.56.30`  
@@ -62,28 +65,35 @@ Although no files were exposed during this assessment, an insecure configuration
 
 ### Description
 
-The SMB service exposes several insecure configurations.
+Durante a SMB enumeration, identifiquei várias configurações inseguras no serviço.
 
-Enumeration identified that SMBv1 is enabled and SMB message signing is disabled.
+O Nmap revelou que SMBv1 está ativo e que o SMB message signing está desativado.
 
-The service also allows anonymous/guest authentication and permits unauthenticated enumeration of SMB shares and local user accounts.
+Também identifiquei que o serviço permite anonymous/guest authentication, possibilitando a enumeração de SMB shares e de contas de utilizadores locais.
 
-The `tmp` share was reported by Nmap as allowing anonymous `READ/WRITE` access.
+A share `tmp` foi identificada pelo Nmap como permitindo anonymous `READ/WRITE` access.
 
-Manual validation confirmed that an anonymous user could successfully authenticate to the SMB service, enumerate available shares, access the `tmp` share, and list its contents.
+Para validar os resultados, utilizei o `smbclient` e confirmei manualmente que era possível:
+
+- Estabelecer uma ligação SMB sem password
+- Enumerar as shares disponíveis
+- Aceder à share `tmp`
+- Listar o conteúdo da share
+
+A permissão de escrita na share `tmp` foi reportada pelo Nmap, mas não foi confirmada manualmente.
 
 ### Impact
 
-These SMB misconfigurations increase the attack surface of the system and may allow an unauthenticated attacker to gather information or interact with exposed resources.
+Estas configurações aumentam a attack surface do sistema e permitem que um utilizador não autenticado recolha informações ou interaja com recursos partilhados.
 
-Potential impacts include:
+Os principais riscos incluem:
 
-- Enumeration of valid usernames
-- Enumeration of SMB shares
-- Unauthorized access to shared resources
-- Exposure of files stored in anonymously accessible shares
-- Increased risk associated with the use of the legacy SMBv1 protocol
-- Increased exposure to relay or man-in-the-middle attacks when SMB signing is disabled
+- Enumeração de usernames válidos
+- Enumeração de SMB shares
+- Acesso não autorizado a recursos partilhados
+- Possível exposição de ficheiros em shares acessíveis anonimamente
+- Riscos associados à utilização do protocolo legacy SMBv1
+- Maior exposição a determinados ataques de SMB relay ou Man-in-the-Middle quando o SMB signing está desativado
 
 ### Evidence
 
@@ -99,15 +109,20 @@ Potential impacts include:
 
 ### Recommendation
 
-- Disable SMBv1 and use modern SMB versions.
-- Enable SMB message signing where appropriate.
-- Disable anonymous and guest SMB access.
-- Restrict access to SMB shares using proper authentication and permissions.
-- Remove unnecessary SMB shares.
-- Limit SMB access to trusted hosts and network segments.
-- Keep Samba updated to a supported version.
+- Desativar SMBv1 e utilizar versões modernas do protocolo SMB.
+- Ativar SMB message signing quando aplicável.
+- Desativar anonymous e guest SMB access, caso não sejam necessários.
+- Restringir o acesso às SMB shares através de authentication e permissions adequadas.
+- Remover shares desnecessárias.
+- Limitar o acesso SMB a hosts e network segments autorizados.
+- Atualizar o Samba para uma versão suportada.
 
 ### Status
+
+**Confirmed**
+
+---
+
 ## Finding 03 — Exposed PHP Information Page
 
 **Target:** `192.168.56.30`  
@@ -117,37 +132,37 @@ Potential impacts include:
 
 ### Description
 
-A publicly accessible PHP information page was identified at:
+Durante a HTTP enumeration, identifiquei uma página de informação PHP acessível sem autenticação:
 
 `http://192.168.56.30/phpinfo.php`
 
-The page exposes detailed information about the server's PHP configuration and underlying system.
+Esta página expõe informações detalhadas sobre a configuração PHP e o sistema onde o serviço está instalado.
 
-The exposed information includes:
+Entre as informações disponíveis encontram-se:
 
 - PHP version `5.2.4-2ubuntu5.10`
-- Operating system and kernel information
+- Operating system e kernel information
 - Server API configuration
 - PHP configuration file locations
-- Loaded `php.ini` path
-- Enabled PHP extensions and modules
+- Caminho do ficheiro `php.ini`
+- PHP extensions e modules carregados
 - Internal filesystem paths
 
-This information was initially identified using Nmap HTTP enumeration and was then manually validated through the web browser.
+O ficheiro foi inicialmente identificado através do script `http-enum` do Nmap e posteriormente validado através do browser.
 
 ### Impact
 
-The exposed `phpinfo()` page provides an unauthenticated user with detailed technical information about the server environment.
+A exposição da página `phpinfo()` permite que um utilizador não autenticado obtenha informações técnicas detalhadas sobre o servidor.
 
-Although this does not directly provide access to the system, the information can assist an attacker during reconnaissance by helping identify:
+Embora esta exposição não permita, por si só, obter acesso ao sistema, pode ajudar um atacante durante a reconnaissance ao revelar:
 
 - Software versions
 - Server configuration
-- Installed PHP components
+- PHP components instalados
 - Internal filesystem paths
-- Potentially vulnerable technologies
+- Tecnologias que podem apresentar vulnerabilidades conhecidas
 
-This information can make subsequent attacks more targeted and efficient.
+Estas informações podem facilitar a preparação de ataques mais direcionados.
 
 ### Evidence
 
@@ -157,13 +172,12 @@ This information can make subsequent attacks more targeted and efficient.
 
 ### Recommendation
 
-- Remove publicly accessible `phpinfo()` pages from production systems.
-- Restrict diagnostic and development pages to authorized administrators.
-- Avoid exposing unnecessary information about software versions and server configuration.
-- Review the web root for other development, test, or diagnostic files.
-- Keep PHP and the web server updated to supported versions.
+- Remover páginas `phpinfo()` acessíveis publicamente em ambientes de produção.
+- Restringir o acesso a páginas de diagnóstico e desenvolvimento a administradores autorizados.
+- Evitar a exposição desnecessária de software versions e configurações internas.
+- Rever o web root para identificar outros ficheiros de teste, desenvolvimento ou diagnóstico.
+- Manter o PHP e o web server atualizados e em versões suportadas.
 
 ### Status
 
-**Confirmed**
 **Confirmed**
