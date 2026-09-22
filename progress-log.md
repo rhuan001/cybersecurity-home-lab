@@ -110,3 +110,14 @@
 - Configurei o Splunk para monitorizar esse ficheiro com o sourcetype `metasploitable_apache_live`.
 - Executei um novo pedido HTTP a partir do Kali e confirmei que apareceu automaticamente no Splunk.
 - Documentei a importação dos logs antigos e a recolha contínua no `setup-notes.md`.
+- Validei uma tentativa de login SSH falhada a partir do Kali e confirmei o respetivo evento no Splunk.
+- Preparei uma wordlist com 25 passwords da RockYou e uma credencial conhecida do laboratório, totalizando 26 entradas.
+- Tentei executar o SSH dictionary attack com Hydra, mas encontrei uma incompatibilidade entre os algoritmos MAC do cliente e do servidor.
+- Utilizei o Medusa como alternativa, com uma tarefa de autenticação em simultâneo.
+- O Medusa reportou 26 verificações e encontrou a password válida na última entrada da wordlist.
+- Analisei no Splunk os eventos `Failed password`, `Accepted password` e as mensagens de autenticação do PAM.
+- Criei uma detection query para identificar IPs com cinco ou mais falhas SSH num intervalo de dois minutos.
+- A query identificou 7 eventos `Failed password` provenientes do Kali no intervalo analisado.
+- Confirmei um login SSH bem-sucedido do utilizador `msfadmin` após as tentativas falhadas.
+- Documentei o dictionary attack em `03-exploitation` e a análise dos eventos e a deteção em `04-detection/ssh-detection.md`.
+- Organizei as screenshots do cenário nas respetivas pastas do GitHub.
