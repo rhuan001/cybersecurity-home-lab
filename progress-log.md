@@ -121,3 +121,14 @@
 - Confirmei um login SSH bem-sucedido do utilizador `msfadmin` após as tentativas falhadas.
 - Documentei o dictionary attack em `03-exploitation` e a análise dos eventos e a deteção em `04-detection/ssh-detection.md`.
 - Organizei as screenshots do cenário nas respetivas pastas do GitHub.
+## Dia — 23/09/2026
+
+- Iniciei a preparação do segundo cenário de exploitation, focado em Web Security.
+- Acedi ao DVWA alojado no Metasploitable2 através do Kali.
+- Configurei o DVWA com `Security Level: Low`.
+- Iniciei o Burp Suite Community Edition no Kali.
+- Utilizei o browser integrado do Burp para aceder ao DVWA através do Proxy.
+- Ativei o `Intercept` e confirmei que os pedidos HTTP ficam retidos no Burp antes de serem enviados para o Metasploitable2.
+- Acedi ao módulo `SQL Injection` do DVWA.
+- Enviei o valor normal `id=1` e capturei o respetivo HTTP request no Burp.
+- Analisei os principais elementos do request, incluindo HTTP method, path, query parameters, headers, cookies e session ID.
