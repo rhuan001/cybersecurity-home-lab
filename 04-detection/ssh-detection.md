@@ -20,7 +20,7 @@ index=* host="Metasploitable2" sourcetype="metasploitable_auth" ("Failed passwor
 
 A pesquisa mostrou tentativas falhadas e logins bem-sucedidos. Os resultados incluíam também eventos anteriores ao ataque com Medusa.
 
-![SSH Authentication Events](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/34-ssh-auth-events-splunk.png)
+![SSH Authentication Events](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/1-ssh-auth-events-splunk.png)
 
 ## Detailed SSH Log Analysis
 
@@ -43,7 +43,7 @@ A pesquisa apresentou 32 eventos no período selecionado, incluindo:
 
 Os 32 eventos não representam 32 passwords diferentes, porque uma tentativa de autenticação pode gerar várias mensagens.
 
-![Detailed SSH Logs](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/35-ssh-detailed-auth-logs.png)
+![Detailed SSH Logs](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/2-ssh-detailed-auth-logs.png)
 
 ## SSH Brute Force Detection
 
@@ -62,7 +62,7 @@ A query identifica automaticamente o IP de origem, sem precisar de conhecer ante
 
 O resultado mostrou **7 eventos `Failed password` provenientes de `192.168.56.20`** no intervalo de dois minutos iniciado às 22:24.
 
-![SSH Brute Force Detection](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/36-ssh-brute-force-detection.png)
+![SSH Brute Force Detection](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/3-ssh-brute-force-detection.png)
 
 ## Successful Login Investigation
 
@@ -74,7 +74,7 @@ index=* host="Metasploitable2" sourcetype="metasploitable_auth" "Accepted passwo
 
 O Splunk confirmou um evento `Accepted password` para o utilizador `msfadmin`, com origem em `192.168.56.20`, às 22:25:39.
 
-![SSH Successful Login](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/37-ssh-successful-login.png)
+![SSH Successful Login](https://raw.githubusercontent.com/rhuan001/cybersecurity-home-lab/main/04-detection/screenshots/4-ssh-successful-login.png)
 
 ## Analysis
 
