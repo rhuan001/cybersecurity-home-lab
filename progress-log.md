@@ -89,7 +89,7 @@
 - Criei o finding `Exposed PHP Information Page`.
 - Classifiquei o finding como `Low` e documentei impacto, evidências e recomendações em `02-reconnaissance/findings.md`.
 - Documentei toda a enumeração Web em `02-reconnaissance/commands.md`.
-## Dia — 22/09/2026
+## Dia 8— 22/09/2026
 
 - Verifiquei que o Splunk recebia logs do Ubuntu Server e do Windows, mas ainda não estava a receber logs do Metasploitable2.
 - Confirmei que os eventos de autenticação do Metasploitable2 eram guardados localmente em `/var/log/auth.log`.
@@ -121,7 +121,7 @@
 - Confirmei um login SSH bem-sucedido do utilizador `msfadmin` após as tentativas falhadas.
 - Documentei o dictionary attack em `03-exploitation` e a análise dos eventos e a deteção em `04-detection/ssh-detection.md`.
 - Organizei as screenshots do cenário nas respetivas pastas do GitHub.
-## Dia — 23/09/2026
+## Dia 9— 23/09/2026
 
 - Iniciei a preparação do segundo cenário de exploitation, focado em Web Security.
 - Acedi ao DVWA alojado no Metasploitable2 através do Kali.
@@ -132,3 +132,18 @@
 - Acedi ao módulo `SQL Injection` do DVWA.
 - Enviei o valor normal `id=1` e capturei o respetivo HTTP request no Burp.
 - Analisei os principais elementos do request, incluindo HTTP method, path, query parameters, headers, cookies e session ID.
+- ## Dia 10— 28/09/2026
+
+- Retomei o cenário 2 (Web Security) após uma pausa, reabrindo o Burp Suite e confirmando o Proxy/Intercept.
+- Confirmei o login no DVWA e o Security Level em `Low`.
+- Intercetei o pedido `GET /dvwa/vulnerabilities/sqli/?id=3&Submit=Submit` e enviei-o para o Repeater.
+- Estabeleci uma baseline testando os valores `id=3` e `id=2`, confirmando que o parâmetro controla diretamente o registo devolvido pela query.
+- Testei o payload `3' OR '1'='1` e obtive inicialmente uma resposta vazia.
+- Identifiquei que o Security Level tinha mudado, sem intenção, para `High`, o que bloqueava a injeção.
+- Repus o Security Level em `Low` e voltei a submeter o payload através do formulário do DVWA.
+- Confirmei a exploração bem-sucedida: a aplicação devolveu os 5 utilizadores da tabela `users` em vez de apenas um.
+- Analisei o `access.log` do Apache no Metasploitable2 e localizei o pedido correspondente, identificável pelo `Content-Length` superior ao da resposta normal.
+- Confirmei no Splunk que o pedido chegou através da pipeline `metasploitable_apache_live`.
+- Criei uma query de deteção (`"%27" "OR"`) que identificou os eventos relacionados com a SQL Injection.
+- Documentei o cenário completo em `03-exploitation/dvwa-sql-injection.md`.
+- Organizei as screenshots do cenário nas pastas `03-exploitation` e `04-detection`.
