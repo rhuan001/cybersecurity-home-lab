@@ -1,0 +1,72 @@
+# Scenario 01 — Incident Response: SSH Dictionary Attack
+
+## 1. Resumo do Incidente
+
+Foi detetada uma série de tentativas de autenticação SSH falhadas contra o Metasploitable2 (`192.168.56.30`), com origem no host `192.168.56.20`, seguidas de um login bem-sucedido com a conta `msfadmin`.
+
+O padrão observado é consistente com um dictionary attack contra o serviço SSH.
+
+---
+
+## 2. Cronologia (Timeline)
+
+| Hora | Evento |
+|------|--------|
+| ~22:24 | Início de múltiplas tentativas de autenticação SSH falhadas a partir de `192.168.56.20` |
+| 22:24 (janela de 2 min) | 7 eventos `Failed password` registados no Splunk |
+| 22:25:39 | Evento `Accepted password` para a conta `msfadmin` a partir de `192.168.56.20` |
+
+---
+
+## 3. Sistemas e Contas Afetados
+
+- **Sistema alvo:** Metasploitable2 — `192.168.56.30`
+- **Serviço:** SSH — `22/TCP`
+- **Conta comprometida:** `msfadmin`
+- **Origem do ataque:** `192.168.56.20`
+
+---
+
+## 4. Evidências
+
+- Eventos `Failed password` e `Accepted password` no sourcetype `metasploitable_auth`
+- Detection query no Splunk identificou 7 falhas de autenticação num intervalo de 2 minutos a partir do mesmo IP
+- Confirmação de login bem-sucedido da mesma origem após as falhas
+
+Evidências documentadas em `04-detection/ssh-detection.md`.
+
+---
+
+## 5. Impacto
+
+O ataque resultou na obtenção de credenciais válidas para a conta `msfadmin` através de tentativas repetidas.
+
+Num ambiente real, o comprometimento de uma conta com acesso SSH poderia permitir acesso remoto ao sistema, execução de comandos e, dependendo dos privilégios da conta, movimentação lateral ou escalada de privilégios.
+
+---
+
+## 6. Contenção
+
+Ações de contenção aplicáveis neste tipo de incidente:
+
+- Bloquear o IP de origem (`192.168.56.20`) ao nível da firewall
+- Desativar temporariamente a conta afetada (`msfadmin`)
+- Terminar sessões SSH ativas provenientes da origem suspeita
+
+---
+
+## 7. Remediação
+
+- Impor uma política de passwords fortes
+- Implementar uma account lockout policy após múltiplas falhas de autenticação
+- Restringir o acesso SSH por IP (allowlist) ou através de VPN
+- Preferir autenticação por chave em vez de password
+- Considerar a utilização de ferramentas como o fail2ban para bloquear automaticamente IPs com múltiplas falhas
+
+---
+
+## 8. Lições Aprendidas
+
+A monitorização centralizada dos logs de autenticação permitiu identificar rapidamente o padrão de múltiplas falhas seguidas de sucesso.
+
+Uma detection query baseada na contagem de falhas por IP num intervalo de tempo mostrou-se eficaz para identificar este tipo de atividade. Num ambiente de produção, o threshold utilizado deveria ser ajustado ao comportamento normal dos utilizadores para reduzir falsos positivos.
