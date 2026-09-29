@@ -2,7 +2,7 @@
 
 ## 1. Resumo do Incidente
 
-Foi detetada uma série de tentativas de autenticação SSH falhadas contra o Metasploitable2 (`192.168.56.30`), com origem no host `192.168.56.20`, seguidas de um login bem-sucedido com a conta `msfadmin`.
+Foi detetada uma série de tentativas de autenticação SSH falhadas contra o Metasploitable2 (`192.168.56.30`), com origem no host `192.168.56.20`, seguidas de uma autenticação bem-sucedida com a conta `msfadmin`.
 
 O padrão observado é consistente com um dictionary attack contra o serviço SSH.
 
@@ -22,7 +22,7 @@ O padrão observado é consistente com um dictionary attack contra o serviço SS
 
 - **Sistema alvo:** Metasploitable2 — `192.168.56.30`
 - **Serviço:** SSH — `22/TCP`
-- **Conta comprometida:** `msfadmin`
+- **Conta envolvida:** `msfadmin`
 - **Origem do ataque:** `192.168.56.20`
 
 ---
@@ -31,7 +31,7 @@ O padrão observado é consistente com um dictionary attack contra o serviço SS
 
 - Eventos `Failed password` e `Accepted password` no sourcetype `metasploitable_auth`
 - Detection query no Splunk identificou 7 falhas de autenticação num intervalo de 2 minutos a partir do mesmo IP
-- Confirmação de login bem-sucedido da mesma origem após as falhas
+- Confirmação de um evento `Accepted password` para a conta `msfadmin`, da mesma origem, após as falhas
 
 Evidências documentadas em `04-detection/ssh-detection.md`.
 
@@ -39,23 +39,23 @@ Evidências documentadas em `04-detection/ssh-detection.md`.
 
 ## 5. Impacto
 
-O ataque resultou na obtenção de credenciais válidas para a conta `msfadmin` através de tentativas repetidas.
+A evidência observada mostra que, após múltiplas tentativas falhadas, ocorreu uma autenticação SSH bem-sucedida com a conta `msfadmin` a partir de `192.168.56.20`.
 
-Num ambiente real, o comprometimento de uma conta com acesso SSH poderia permitir acesso remoto ao sistema, execução de comandos e, dependendo dos privilégios da conta, movimentação lateral ou escalada de privilégios.
+Num ambiente real, uma autenticação bem-sucedida deste tipo poderia permitir acesso remoto ao sistema e execução de comandos e, dependendo dos privilégios da conta, movimentação lateral ou escalada de privilégios.
 
 ---
 
-## 6. Contenção
+## 6. Contenção (Ações Recomendadas)
 
-Ações de contenção aplicáveis neste tipo de incidente:
+As seguintes ações de contenção seriam aplicáveis a este tipo de incidente. Não foram executadas neste laboratório e são listadas como resposta recomendada:
 
 - Bloquear o IP de origem (`192.168.56.20`) ao nível da firewall
-- Desativar temporariamente a conta afetada (`msfadmin`)
+- Desativar temporariamente a conta envolvida (`msfadmin`)
 - Terminar sessões SSH ativas provenientes da origem suspeita
 
 ---
 
-## 7. Remediação
+## 7. Remediação (Ações Recomendadas)
 
 - Impor uma política de passwords fortes
 - Implementar uma account lockout policy após múltiplas falhas de autenticação
@@ -67,6 +67,6 @@ Ações de contenção aplicáveis neste tipo de incidente:
 
 ## 8. Lições Aprendidas
 
-A monitorização centralizada dos logs de autenticação permitiu identificar rapidamente o padrão de múltiplas falhas seguidas de sucesso.
+A monitorização centralizada dos logs de autenticação permitiu identificar o padrão de múltiplas falhas seguidas de uma autenticação bem-sucedida.
 
 Uma detection query baseada na contagem de falhas por IP num intervalo de tempo mostrou-se eficaz para identificar este tipo de atividade. Num ambiente de produção, o threshold utilizado deveria ser ajustado ao comportamento normal dos utilizadores para reduzir falsos positivos.
