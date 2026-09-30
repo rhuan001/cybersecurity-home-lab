@@ -1,6 +1,6 @@
 # Scenario 01 — Incident Response: SSH Dictionary Attack
 
-## 1. Resumo do Incidente
+## 1. Incident Summary
 
 Foi detetada uma série de eventos `Failed password` no serviço SSH do Metasploitable2 (`192.168.56.30`), com origem no host `192.168.56.20`, seguida de um evento `Accepted password` para a conta `msfadmin` a partir da mesma origem.
 
@@ -8,65 +8,70 @@ O padrão observado é consistente com um dictionary attack contra o serviço SS
 
 ---
 
-## 2. Cronologia (Timeline)
+## 2. Timeline
 
-| Hora | Evento |
-|------|--------|
-| Janela de 2 min iniciada às 22:24 | 7 eventos `Failed password` a partir de `192.168.56.20`, identificados pela detection query no Splunk |
-| 22:25:39 | Evento `Accepted password` para a conta `msfadmin` a partir de `192.168.56.20` |
+| Time (UTC) | Event |
+|------------|-------|
+| 22/09/2026 22:24 (2-minute window) | 7 `Failed password` events from `192.168.56.20`, identified by the detection query in Splunk |
+| 22/09/2026 22:25:39 | `Accepted password` event for account `msfadmin` from `192.168.56.20` (port `42882`) |
 
----
-
-## 3. Sistemas e Contas Afetados
-
-- **Sistema alvo:** Metasploitable2 — `192.168.56.30`
-- **Serviço:** SSH — `22/TCP`
-- **Conta envolvida:** `msfadmin`
-- **Origem do ataque:** `192.168.56.20`
+> Horas em UTC, conforme o timestamp syslog (`+00:00`) dos eventos no Splunk.
 
 ---
 
-## 4. Evidências
+## 3. Affected Systems and Accounts
 
-- **Falhas de autenticação:** detection query sobre o sourcetype `metasploitable_auth` (5 ou mais eventos `Failed password` por IP num intervalo de 2 minutos)
+- **Target system:** Metasploitable2 — `192.168.56.30`
+- **Service:** SSH — `22/TCP`
+- **Account involved:** `msfadmin`
+- **Attack source:** `192.168.56.20`
+
+---
+
+## 4. Evidence
+
+- **Authentication failures:** detection query sobre o sourcetype `metasploitable_auth` (5 ou mais eventos `Failed password` por IP num intervalo de 2 minutos)
 
 ```spl
 index=* host="Metasploitable2" sourcetype="metasploitable_auth" "Failed password"
-| rex field=_raw "from (?<src_ip>\d{1,3}(?:\.\d{1,3}){3})"
+| rex "from (?<ip>\S+)"
 | bin _time span=2m
-| stats count AS failed_attempts BY _time src_ip
-| where failed_attempts >= 5
-| sort - _time
+| stats count by _time ip
+| where count>=5
 ```
 
-Resultado: 7 eventos `Failed password` provenientes de `192.168.56.20` no intervalo de 2 minutos iniciado às 22:24.
+Resultado: 8 eventos `Failed password` na última hora, dos quais 7 provenientes de `192.168.56.20` no intervalo de 2 minutos iniciado às 22:24.
 
 ![SSH Brute Force Detection](../04-detection/screenshots/3-ssh-brute-force-detection.png)
 
-- **Autenticação bem-sucedida:** pesquisa dos eventos `Accepted password` a partir do IP identificado
+- **Successful authentication:** pesquisa dos eventos `Accepted password` a partir do IP identificado
 
 ```spl
 index=* host="Metasploitable2" sourcetype="metasploitable_auth" "Accepted password" "192.168.56.20"
 ```
 
-Resultado: um evento `Accepted password` para o utilizador `msfadmin`, com origem em `192.168.56.20`, às 22:25:39.
+Resultado: 1 evento `Accepted password` para o utilizador `msfadmin`, com origem em `192.168.56.20`, às 22:25:39:
+
+```text
+2026-09-22T22:25:39.794999+00:00 192.168.56.30 sshd[5271]: Accepted password for msfadmin from 192.168.56.20 port 42882 ssh2
+```
 
 ![SSH Successful Login](../04-detection/screenshots/4-ssh-successful-login.png)
 
-Fluxo da evidência:
+Evidence flow:
 
 ```text
-  7 eventos "Failed password" (192.168.56.20, janela de 2 min iniciada às 22:24)
+  7 "Failed password" events (192.168.56.20, 2-minute window starting at 22:24)
               │
               ▼
-  1 evento "Accepted password" (msfadmin, 192.168.56.20, 22:25:39)
+  1 "Accepted password" event (msfadmin, 192.168.56.20, 22:25:39)
 ```
 
-Evidências documentadas em `04-detection/ssh-detection.md`.
+Evidence documented in `03-exploitation/ssh-dictionary-attack.md` and `04-detection/ssh-detection.md`.
 
 ---
 
-## 5. Impacto
+## 5. Impact
 
 A evidência observada mostra que, após múltiplas falhas de autenticação, ocorreu uma autenticação SSH bem-sucedida com a conta `msfadmin` a partir de `192.168.56.20`.
 
@@ -74,7 +79,7 @@ Neste cenário não foi analisada a atividade realizada durante a sessão. Num a
 
 ---
 
-## 6. Contenção (Ações Recomendadas)
+## 6. Containment (Recommended Actions)
 
 As seguintes ações de contenção seriam aplicáveis a este tipo de incidente. Não foram executadas neste laboratório e são listadas como resposta recomendada:
 
@@ -84,7 +89,7 @@ As seguintes ações de contenção seriam aplicáveis a este tipo de incidente.
 
 ---
 
-## 7. Remediação (Ações Recomendadas)
+## 7. Remediation (Recommended Actions)
 
 - Impor uma política de passwords fortes
 - Implementar uma account lockout policy após múltiplas falhas de autenticação
@@ -94,7 +99,7 @@ As seguintes ações de contenção seriam aplicáveis a este tipo de incidente.
 
 ---
 
-## 8. Lições Aprendidas
+## 8. Lessons Learned
 
 A monitorização centralizada dos logs de autenticação permitiu identificar o padrão de múltiplas falhas seguidas de uma autenticação bem-sucedida.
 
