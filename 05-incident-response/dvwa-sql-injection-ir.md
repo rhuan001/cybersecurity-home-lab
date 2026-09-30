@@ -1,6 +1,6 @@
 # Scenario 02 — Incident Response: DVWA SQL Injection
 
-## 1. Resumo do Incidente
+## 1. Incident Summary
 
 Foi detetado um pedido HTTP com um payload de SQL Injection contra a aplicação DVWA (Security Level: Low) alojada no Metasploitable2 (`192.168.56.30`), com origem no host `192.168.56.20`. O pedido foi bem-sucedido: a aplicação devolveu 5 registos de utilizadores, em vez de apenas o utilizador associado ao `id` submetido.
 
@@ -8,28 +8,28 @@ O padrão observado é consistente com a exploração de uma vulnerabilidade de 
 
 ---
 
-## 2. Cronologia (Timeline)
+## 2. Timeline
 
-| Hora | Evento |
-|------|--------|
-| 28/Sep/2026 17:40:34 (-0400) | Pedido `GET /dvwa/vulnerabilities/sqli/` com `id=3%27+OR+%271%27%3D%271` a partir de `192.168.56.20`; resposta `HTTP 200` com 4660 bytes (resposta normal: 4387 bytes) |
-| — | Pedido registado no Apache `access.log` e indexado no Splunk (`metasploitable_apache_live`), onde a pesquisa por `%27` devolveu 6 eventos |
-
----
-
-## 3. Sistemas e Contas Afetados
-
-- **Sistema alvo:** Metasploitable2 — `192.168.56.30`
-- **Serviço:** HTTP — Apache + DVWA (módulo SQL Injection)
-- **Parâmetro vulnerável:** `id`
-- **Origem do ataque:** `192.168.56.20`
-- **Dados expostos:** nome e apelido dos 5 registos de utilizadores apresentados (`admin`, `Gordon Brown`, `Hack Me`, `Pablo Picasso`, `Bob Smith`)
+| Time | Event |
+|------|-------|
+| 28/Sep/2026 17:40:34 (-0400) | `GET /dvwa/vulnerabilities/sqli/` request with `id=3%27+OR+%271%27%3D%271` from `192.168.56.20`; `HTTP 200` response with 4660 bytes (normal response: 4387 bytes) |
+| — | Request logged in Apache `access.log` and indexed in Splunk (`metasploitable_apache_live`), where the `%27` search returned 6 events |
 
 ---
 
-## 4. Evidências
+## 3. Affected Systems and Accounts
 
-- **Aplicação:** o payload `3' OR '1'='1` devolveu 5 utilizadores em vez de 1
+- **Target system:** Metasploitable2 — `192.168.56.30`
+- **Service:** HTTP — Apache + DVWA (módulo SQL Injection)
+- **Vulnerable parameter:** `id`
+- **Attack source:** `192.168.56.20`
+- **Exposed data:** nome e apelido dos 5 registos de utilizadores apresentados (`admin`, `Gordon Brown`, `Hack Me`, `Pablo Picasso`, `Bob Smith`)
+
+---
+
+## 4. Evidence
+
+- **Application:** o payload `3' OR '1'='1` devolveu 5 utilizadores em vez de 1
 
 ![DVWA SQL Injection - All Users](../03-exploitation/screenshots/2-dvwa-sqli-or-1equals1-all-users.png)
 
@@ -47,23 +47,23 @@ host="Metasploitable2" sourcetype="metasploitable_apache_live" "%27"
 
 ![Splunk SQLi Detection Query](../04-detection/screenshots/5-splunk-sqli-detection-query.png)
 
-Fluxo da evidência:
+Evidence flow:
 
 ```text
-  Aplicação (5 utilizadores devolvidos)
+  Application (5 users returned)
               │
               ▼
   Apache access.log (200, 4660 bytes vs 4387 bytes)
               │
               ▼
-  Splunk (metasploitable_apache_live → pesquisa por "%27")
+  Splunk (metasploitable_apache_live → search for "%27")
 ```
 
-Evidências documentadas em `03-exploitation/dvwa-sql-injection.md` e `04-detection/dvwa-sql-injection-detection.md`.
+Evidence documented in `03-exploitation/dvwa-sql-injection.md` and `04-detection/dvwa-sql-injection-detection.md`.
 
 ---
 
-## 5. Impacto
+## 5. Impact
 
 A evidência observada mostra que input controlado pelo utilizador influenciou a consulta SQL executada pela aplicação, levando à exposição de 5 registos de utilizadores a partir de `192.168.56.20`.
 
@@ -71,7 +71,7 @@ Neste cenário foram apresentados apenas o nome e o apelido dos utilizadores. Nu
 
 ---
 
-## 6. Contenção (Ações Recomendadas)
+## 6. Containment (Recommended Actions)
 
 As seguintes ações de contenção seriam aplicáveis a este tipo de incidente. Não foram executadas neste laboratório e são listadas como resposta recomendada:
 
@@ -82,7 +82,7 @@ As seguintes ações de contenção seriam aplicáveis a este tipo de incidente.
 
 ---
 
-## 7. Remediação (Ações Recomendadas)
+## 7. Remediation (Recommended Actions)
 
 - Utilizar prepared statements / queries parametrizadas em vez de concatenar input do utilizador nas queries SQL
 - Validar e sanitizar o input do utilizador (tipo, formato e comprimento esperados)
@@ -93,7 +93,7 @@ As seguintes ações de contenção seriam aplicáveis a este tipo de incidente.
 
 ---
 
-## 8. Lições Aprendidas
+## 8. Lessons Learned
 
 A análise conjunta de três pontos de evidência (resposta da aplicação, Apache `access.log` e Splunk) permitiu confirmar a exploração com maior confiança. O tamanho da resposta (4660 bytes contra 4387 bytes) mostrou-se um indicador útil para distinguir um pedido normal de um pedido que devolveu múltiplos registos.
 
