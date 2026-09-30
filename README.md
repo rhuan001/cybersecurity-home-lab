@@ -89,7 +89,6 @@ The full technique list, including reconnaissance, is in [`mitre-attack-mapping.
 05-incident-response/   → incident response write-ups for each scenario
 mitre-attack-mapping.md → techniques used, mapped to ATT&CK
 progress-log.md         → day-by-day log of the project
-final-report.pdf        → full write-up (in preparation)
 ```
 
 ## Methodology
@@ -172,7 +171,6 @@ These limitations are future development areas, not completed capabilities.
 - [x] Splunk detection
 - [x] Incident response documentation
 - [x] MITRE ATT&CK mapping
-- [ ] Final report
 - [ ] Splunk dashboards and alerts
 - [ ] Additional scenarios
 
