@@ -172,7 +172,6 @@ These limitations are future development areas, not completed capabilities.
 - [x] Incident response documentation
 - [x] MITRE ATT&CK mapping
 - [ ] Splunk dashboards and alerts
-- [ ] Additional scenarios
 
 ## Author
 
