@@ -132,7 +132,7 @@
 - Acedi ao módulo `SQL Injection` do DVWA.
 - Enviei o valor normal `id=1` e capturei o respetivo HTTP request no Burp.
 - Analisei os principais elementos do request, incluindo HTTP method, path, query parameters, headers, cookies e session ID.
-- ## Dia 10— 28/09/2026
+## Dia 10— 28/09/2026
 
 - Retomei o cenário 2 (Web Security) após uma pausa, reabrindo o Burp Suite e confirmando o Proxy/Intercept.
 - Confirmei o login no DVWA e o Security Level em `Low`.
@@ -147,3 +147,24 @@
 - Criei uma query de deteção (`"%27"`) que identificou os eventos relacionados com a SQL Injection.
 - Documentei o cenário completo em `03-exploitation/dvwa-sql-injection.md`.
 - Organizei as screenshots do cenário nas pastas `03-exploitation` e `04-detection`.
+## Dia 11— 29/09/2026
+
+- Iniciei o terceiro cenário de exploitation, focado em autenticação SMB contra o Windows 10 (`192.168.56.50`, hostname `P1`).
+- Verifiquei que o Windows 10 Home não suporta Remote Desktop como servidor e escolhi o SMB (`445/TCP`) como vetor de autenticação remota.
+- Defini uma password local para a conta `vboxuser`, que não tinha password, e ativei o Network Discovery e o File and Printer Sharing.
+- Executei `smbclient -L //192.168.56.50 -U vboxuser` a partir do Kali com três tentativas: duas falhadas (password incorreta e username incorreto) e uma bem-sucedida.
+- A tentativa bem-sucedida listou as partilhas `ADMIN$`, `C$` e `IPC$`.
+- Confirmei no Splunk (`sourcetype=WinEventLog:Security`, host `P1`) dois eventos `4625` (18:14:42 e 18:14:48) e um evento `4624` (18:15:05).
+- Investiguei o evento `4624` e confirmei `Logon Type: 3`, conta `vboxuser`, workstation `KALI`, origem `192.168.56.20` e pacote de autenticação `NTLM`.
+- Documentei o cenário em `03-exploitation/smb-auth-attack.md` e a deteção em `04-detection/smb-auth-detection.md`.
+- Organizei as screenshots do cenário nas pastas `03-exploitation` e `04-detection`.
+- Iniciei a fase de incident response e defini um template de 8 secções para os documentos (resumo, cronologia, sistemas e contas afetados, evidências, impacto, contenção, remediação e lições aprendidas).
+- Escrevi o incident response do Scenario 1 em `05-incident-response/ssh-dictionary-attack-ir.md`, com a contenção e a remediação como ações recomendadas e não executadas.
+## Dia 12— 30/09/2026
+
+- Escrevi o incident response do Scenario 2 em `05-incident-response/dvwa-sql-injection-ir.md`.
+- Escrevi o incident response do Scenario 3 em `05-incident-response/smb-auth-attack-ir.md`.
+- Revi os três documentos de incident response para referirem apenas o que foi executado: queries reais do Splunk, resultados observados e linguagem cautelosa no impacto.
+- Acrescentei aos documentos de incident response as screenshots de `03-exploitation` e `04-detection`.
+- Corrigi os nomes dos ficheiros `ssh-dictionary-attack.md` e `smb-auth-attack.md` em `03-exploitation`.
+- Revi o repositório completo e identifiquei o que falta: `mitre-attack-mapping.md`, relatório final, atualização do README e dashboards/alertas no Splunk.
