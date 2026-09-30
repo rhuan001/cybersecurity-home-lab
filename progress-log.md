@@ -144,6 +144,6 @@
 - Confirmei a exploração bem-sucedida: a aplicação devolveu os 5 utilizadores da tabela `users` em vez de apenas um.
 - Analisei o `access.log` do Apache no Metasploitable2 e localizei o pedido correspondente, identificável pelo `Content-Length` superior ao da resposta normal.
 - Confirmei no Splunk que o pedido chegou através da pipeline `metasploitable_apache_live`.
-- Criei uma query de deteção (`"%27" "OR"`) que identificou os eventos relacionados com a SQL Injection.
+- Criei uma query de deteção (`"%27"`) que identificou os eventos relacionados com a SQL Injection.
 - Documentei o cenário completo em `03-exploitation/dvwa-sql-injection.md`.
 - Organizei as screenshots do cenário nas pastas `03-exploitation` e `04-detection`.
